@@ -1,8 +1,8 @@
 # 🎮 Into the Kernel
 
-**Into the Kernel** é um jogo tático em grade em desenvolvimento com Pygame, onde cada ação do jogador ocorre em turnos e exige planejamento estratégico.
+**Into the Kernel** é um jogo tático em grade desenvolvido com Pygame, onde cada ação ocorre em turnos e exige planejamento estratégico.
 
-Você controla um agente infiltrado em um ambiente hostil, representado por um mapa 15x10. Seu objetivo é:
+Você controla um agente infiltrado em um ambiente hostil. Seu objetivo é:
 
 - alcançar um terminal (`T`)
 - realizar o hack
@@ -11,9 +11,9 @@ Você controla um agente infiltrado em um ambiente hostil, representado por um m
 Durante a missão:
 
 - guardas patrulham o mapa
-- o jogador perde se for visto ou encostar em um inimigo
+- o jogador perde ao ser visto ou ao colidir com um inimigo
 
-A dinâmica por turnos transforma cada movimento em uma decisão crítica, combinando elementos de stealth e raciocínio lógico.
+A proposta do jogo combina **stealth**, **raciocínio lógico** e **tomada de decisão por turnos**.
 
 ---
 
@@ -23,6 +23,7 @@ A dinâmica por turnos transforma cada movimento em uma decisão crítica, combi
 - Pygame
 - GitHub Actions (CI)
 - Flake8 (lint)
+- Black (code formatter)
 
 ---
 
@@ -34,17 +35,29 @@ A dinâmica por turnos transforma cada movimento em uma decisão crítica, combi
 ├── src/
 │   ├── main.py
 │   ├── config.py
+│   ├── game/
+│   │   ├── game.py
+│   │   ├── renderer.py
+│   │   └── **init**.py
 │   └── **init**.py
 ├── .github/
 │   └── workflows/
 │       └── ci.yml
+├── pyproject.toml
 ├── requirements.txt
-├── .flake8
-|── .gitignore
 ├── CHANGELOG.md
 └── README.md
 
 ````
+
+### 📌 Organização
+
+- `main.py` → ponto de entrada
+- `game.py` → loop principal e controle do jogo
+- `renderer.py` → renderização do mapa
+- `config.py` → constantes globais
+
+Separação pensada para facilitar evolução (player, IA, sistema de turnos).
 
 ---
 
@@ -52,22 +65,51 @@ A dinâmica por turnos transforma cada movimento em uma decisão crítica, combi
 
 O cenário é definido por um array de strings:
 
-- `.` → chão  
-- `#` → parede  
-- `T` → terminal  
-- `E` → saída  
-
----
+| Símbolo | Significado |
+|--------|------------|
+| `.` | chão |
+| `#` | parede |
+| `T` | terminal |
+| `E` | saída |
 
 ## ▶️ Como executar
 
 ```bash
 python -m venv venv
-source venv/bin/activate  # ou Windows equivalente
+source venv/bin/activate  # Windows: venv\Scripts\activate
+
 pip install -r requirements.txt
 
 python -m src.main
 ````
+
+---
+
+## 🎨 Padronização de Código
+
+O projeto utiliza **Black** para formatação automática.
+
+### Rodar localmente:
+
+```bash
+black src
+```
+
+### Verificar (modo CI):
+
+```bash
+black --check src
+```
+
+---
+
+## 🔍 Qualidade de Código
+
+Lint com **flake8**:
+
+```bash
+flake8 src
+```
 
 ---
 
@@ -76,9 +118,10 @@ python -m src.main
 A pipeline executa automaticamente:
 
 * Instalação de dependências
-* Verificação de código com **flake8**
+* Verificação de formatação (**black**)
+* Análise estática (**flake8**)
 
-Falhas de lint impedem merges na branch principal.
+Falhas impedem integração na branch principal.
 
 ---
 
@@ -86,46 +129,59 @@ Falhas de lint impedem merges na branch principal.
 
 ## Decisões técnicas mais relevantes na construção do pipeline
 
-A principal decisão foi adotar uma pipeline simples e determinística, focada em linting com **flake8**. Isso garante padronização de código e detecção precoce de problemas sem introduzir complexidade excessiva.
-Também foi adotado o uso de ambiente limpo (`ubuntu-latest`) e instalação explícita de dependências, evitando efeitos colaterais de ambiente local.
+Foi adotada uma pipeline enxuta com foco em qualidade de código, utilizando **flake8** e **black**.
+A separação entre verificação de estilo e formatação automática garante consistência sem introduzir complexidade excessiva.
+
+Além disso, a execução em ambiente limpo (GitHub Actions) assegura reprodutibilidade e elimina dependência de configurações locais.
 
 ---
 
 ## Impactos da ausência de testes automatizados
 
-A ausência de testes reduz significativamente a confiabilidade da pipeline. Embora o linting valide aspectos sintáticos e de estilo, não há verificação de comportamento ou regressões.
-Isso implica que mudanças podem quebrar funcionalidades sem serem detectadas automaticamente, aumentando o risco em evoluções futuras.
+A ausência de testes limita a validação ao nível sintático e estrutural.
+Isso implica que erros de lógica ou regressões não são detectados automaticamente, aumentando o risco conforme o projeto cresce.
 
 ---
 
 ## Possibilidades reais de evolução para Entrega Contínua
 
-O projeto pode evoluir para Entrega Contínua com:
+O projeto pode evoluir com:
 
-* Adição de testes automatizados (ex: pytest)
-* Geração de artefatos (builds do jogo)
-* Versionamento automatizado (SemVer + tags)
-* Pipeline separada para deploy
+* adoção de testes automatizados (pytest)
+* pipeline de build
+* versionamento automatizado (SemVer + tags)
+* validação de regras de jogo
 
-Isso permitiria que cada alteração validada fosse potencialmente liberada de forma automatizada.
+Isso permitiria transformar a pipeline em um fluxo completo de entrega contínua.
 
 ---
 
 ## Riscos técnicos mitigados pela Integração Contínua
 
-A CI mitiga principalmente:
+A CI mitiga:
 
-* Introdução de código com erros de sintaxe
-* Inconsistência de estilo entre commits
-* Problemas de ambiente (“funciona na minha máquina”)
+* inconsistência de código entre desenvolvedores
+* erros de sintaxe e estilo
+* dependência de ambiente local
 
-Além disso, força uma disciplina mínima de qualidade antes da integração na branch principal.
+Também impõe disciplina mínima antes da integração.
 
 ---
 
 ## 📌 Próximos passos
 
-* Implementar movimentação do player
-* Adicionar sistema de colisão
-* Introduzir testes automatizados
-* Evoluir arquitetura do projeto
+* Sistema de player
+* Movimento por turnos
+* IA de guardas
+* Sistema de detecção (campo de visão)
+* Testes automatizados
+
+---
+
+Se quiser dar um próximo salto, o README pode incluir:
+
+- GIF do jogo rodando  
+- badge do GitHub Actions  
+- seção de arquitetura mais detalhada  
+
+Mas, para contexto acadêmico, esse já está bem sólido.
