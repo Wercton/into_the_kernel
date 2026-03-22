@@ -195,13 +195,3 @@ Também impõe disciplina mínima antes da integração.
 * IA de guardas
 * Sistema de detecção (campo de visão)
 * Testes automatizados
-
----
-
-Se quiser dar um próximo salto, o README pode incluir:
-
-- GIF do jogo rodando  
-- badge do GitHub Actions  
-- seção de arquitetura mais detalhada  
-
-Mas, para contexto acadêmico, esse já está bem sólido.
