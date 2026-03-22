@@ -2,7 +2,15 @@
 # w e $ 0 M dw dd p P yw x diw
 
 import pygame as pg
-from src.config import *
+from src.config import (
+    TILE_SIZE,
+    COLS,
+    ROWS,
+    WIDTH,
+    HEIGHT,
+    MAP,
+    COLORS,
+)
 
 pg.init()
 
@@ -18,11 +26,7 @@ while executando:
 
     for event in pg.event.get():
         if event.type == pg.QUIT:
-            running = False
-
-    for event in pg.event.get():
-        if event.type == pg.QUIT:
-            running = False
+            executando = False
 
     for row in range(ROWS):
         for col in range(COLS):
