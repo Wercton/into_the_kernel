@@ -125,6 +125,26 @@ Falhas impedem integração na branch principal.
 
 ---
 
+## 🌿 Estratégia de Branches
+
+O projeto adota um fluxo simples inspirado em Git Flow:
+
+- `main` → branch estável (produção)
+- `develop` → branch de integração
+
+### 🔄 Fluxo de trabalho
+
+1. Desenvolvimento é feito na branch `develop`
+2. Cada alteração passa pela pipeline de CI:
+   - formatação (black)
+   - lint (flake8)
+3. Após validação, é aberto um Pull Request para `main`
+4. O código só é integrado à `main` após aprovação
+
+Esse fluxo garante que a branch principal permaneça sempre estável e validada.
+
+---
+
 # 🧠 Reflexão Técnica
 
 ## Decisões técnicas mais relevantes na construção do pipeline
